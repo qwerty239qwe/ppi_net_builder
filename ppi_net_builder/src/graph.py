@@ -1,5 +1,5 @@
-from ppinet.src.data import DataManager
-from ppinet.src.fetch import fetch_stringdb, fetch_enrichment, fetch_enrichment_figure
+from ppi_net_builder.src.data import DataManager
+from ppi_net_builder.src.fetch import fetch_stringdb, fetch_enrichment, fetch_enrichment_figure
 import pandas as pd
 import igraph as ig
 from igraph import Graph

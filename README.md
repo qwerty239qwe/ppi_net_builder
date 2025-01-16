@@ -1,15 +1,15 @@
-# PPINet v0.1.0
+# PPI-net-builder v0.1.0
 Protein-Protein Interaction (PPI) network construction and analysis using STRING-db (https://string-db.org/) in Python.
 
 
 ## Installation
 ```bash
-pip install ppinet
+pip install ppi-net-builder
 ```
 
 ## Usage
 ```python
-from ppinet import NetworkBuilder
+from ppi_net_builder import NetworkBuilder
 
 genes = ["p53", "BRCA1", "cdk2", "Q99835"]
 annot_file_name = "./annotation.csv"  # this will be created later

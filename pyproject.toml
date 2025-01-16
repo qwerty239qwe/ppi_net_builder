@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "ppinet"
+name = "ppi-net-builder"
 version = "0.1.0"
 description = "Protein-Protein Interaction (PPI) network construction and analysis using STRING-db (https://string-db.org/) in Python."
 readme = "README.md"
@@ -24,7 +24,7 @@ dependencies = [
 requires-python = ">=3.9"
 
 [project.urls]
-Homepage = "https://github.com/qwerty239qwe/ppinet"
+Homepage = "https://github.com/qwerty239qwe/ppi_net_builder"
 
 [tool.bumpver]
 current_version = "0.1.0"
