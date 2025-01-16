@@ -1,4 +1,4 @@
-from ppipy.src.fetch import fetch_string_ids
+from ppinet.src.fetch import fetch_string_ids
 from enum import Enum
 import typing as t
 
