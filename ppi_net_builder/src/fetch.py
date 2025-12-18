@@ -50,7 +50,7 @@ def fetch_string_ids(genes: t.Sequence,
                                                 3: "species", 
                                                 4: "species_name", 
                                                 5: "preferred_name", 
-                                                6: "annotation"})
+                                                6: "annotation"}).drop(columns=[1])
     if prev_res is not None:
         stringdb_ids = pd.concat([prev_res, stringdb_ids], axis=0)
     if file_name is not None:
