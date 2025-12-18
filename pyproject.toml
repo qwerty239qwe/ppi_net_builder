@@ -21,13 +21,13 @@ dependencies = [
     "tqdm",
     "igraph",
 ]
+requires-python = ">=3.9"
 
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0.0",
     "pytest-cov>=4.0.0",
 ]
-requires-python = ">=3.9"
 
 [project.urls]
 Homepage = "https://github.com/qwerty239qwe/ppi_net_builder"
