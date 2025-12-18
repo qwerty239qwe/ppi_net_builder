@@ -39,8 +39,8 @@ class DataManager:
     @property
     def string_ids(self):
         if self.df is None:
-            return [self._gene_map[gn] for gn in self.genes if gn in self._gene_map]
-        return [self._gene_map[gn] for gn in self.df[self._name_col] if gn in self._gene_map]
+            return [self._gene_map[gn] for gn in self.genes if gn in self._gene_map and self._gene_map[gn] is not None]
+        return [self._gene_map[gn] for gn in self.df[self._name_col] if gn in self._gene_map and self._gene_map[gn] is not None]
     
     @staticmethod
     def handle_species(species) -> int:
