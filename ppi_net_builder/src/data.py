@@ -7,6 +7,12 @@ class Species(Enum):
     human = 9606
     mouse = 10090
     rat = 10116
+    yeast = 559292
+    fruit_fly = 7227
+    zebrafish = 7955
+    chicken = 9031
+    arabidopsis = 3702
+    e_coli = 562
 
 
 common_species = [sp.name for sp in Species]
@@ -19,7 +25,9 @@ class DataManager:
                  name_col="gene_name",
                  annot_file_name=None,
                  version="12.0",
-                 species: t.Union[t.Literal["human", "mouse", "rat"], int, Species]=Species.human):
+                 species: t.Union[t.Literal["human", "mouse", "rat", "yeast", "fruit_fly", "zebrafish", "chicken", "arabidopsis", "e_coli"], 
+                                  int, 
+                                  Species]=Species.human):
         self.df = df
         self.genes = genes
 
