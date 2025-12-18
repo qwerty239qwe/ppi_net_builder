@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import Mock, patch
-from ppi_net_builder.src.fetch import _format_req_url, fetch_string_ids, fetch_stringdb
+from ppi_net_builder.src.fetch import _format_req_url, fetch_string_ids, fetch_stringdb, fetch_enrichment_figure, fetch_enrichment
 
 
 class TestFormatReqUrl:
