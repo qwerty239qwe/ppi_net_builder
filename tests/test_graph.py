@@ -64,8 +64,8 @@ class TestRequireAttribute:
 class TestNetworkBuilder:
     """Test cases for the NetworkBuilder class."""
 
-    @patch('ppi_net_builder.src.graph.fetch_stringdb')
-    @patch('ppi_net_builder.src.graph.fetch_string_ids')
+    @patch('ppi_net_builder.src.fetch.fetch_stringdb')
+    @patch('ppi_net_builder.src.fetch.fetch_string_ids')
     def test_init_with_gene_list(self, mock_fetch_ids, mock_fetch_interactions):
         """Test NetworkBuilder initialization with gene list."""
         # Mock fetch_string_ids
@@ -98,8 +98,8 @@ class TestNetworkBuilder:
         assert nb.subnetworks == {}
         mock_fetch_interactions.assert_called_once()
 
-    @patch('ppi_net_builder.src.graph.fetch_stringdb')
-    @patch('ppi_net_builder.src.graph.fetch_string_ids')
+    @patch('ppi_net_builder.src.fetch.fetch_stringdb')
+    @patch('ppi_net_builder.src.fetch.fetch_string_ids')
     def test_init_with_dataframe(self, mock_fetch_ids, mock_fetch_interactions):
         """Test NetworkBuilder initialization with DataFrame."""
         # Mock fetch_string_ids
@@ -129,8 +129,8 @@ class TestNetworkBuilder:
         assert nb.network is None
         mock_fetch_interactions.assert_called_once()
 
-    @patch('ppi_net_builder.src.graph.fetch_stringdb')
-    @patch('ppi_net_builder.src.graph.fetch_string_ids')
+    @patch('ppi_net_builder.src.fetch.fetch_stringdb')
+    @patch('ppi_net_builder.src.fetch.fetch_string_ids')
     def test_construct_network(self, mock_fetch_ids, mock_fetch_interactions):
         """Test network construction from interaction data."""
         # Mock fetch_string_ids to return gene-to-ID mapping
@@ -163,8 +163,8 @@ class TestNetworkBuilder:
         assert 'gene_name' in nb.network.vs.attributes()
         assert nb.network.vs['gene_name'] == ['A', 'B', 'C']
 
-    @patch('ppi_net_builder.src.graph.fetch_stringdb')
-    @patch('ppi_net_builder.src.graph.fetch_string_ids')
+    @patch('ppi_net_builder.src.fetch.fetch_stringdb')
+    @patch('ppi_net_builder.src.fetch.fetch_string_ids')
     def test_construct_network_vertex_mapping(self, mock_fetch_ids, mock_fetch_interactions):
         """Test that vertex mapping is created correctly."""
         # Mock fetch_string_ids
@@ -194,8 +194,8 @@ class TestNetworkBuilder:
         expected_mapping = {0: 'X', 1: 'Y', 2: 'Z'}
         assert nb.network_vert_dic == expected_mapping
 
-    @patch('ppi_net_builder.src.graph.fetch_stringdb')
-    @patch('ppi_net_builder.src.graph.fetch_string_ids')
+    @patch('ppi_net_builder.src.fetch.fetch_stringdb')
+    @patch('ppi_net_builder.src.fetch.fetch_string_ids')
     def test_extract_subnets(self, mock_fetch_ids, mock_fetch_interactions):
         """Test subnetwork extraction using community detection."""
         # Mock fetch_string_ids
@@ -236,10 +236,10 @@ class TestNetworkBuilder:
         assert 0 in nb.subnetworks
         assert 1 in nb.subnetworks
 
-    @patch('ppi_net_builder.src.graph.fetch_stringdb')
-    @patch('ppi_net_builder.src.graph.fetch_string_ids')
-    @patch('ppi_net_builder.src.graph.fetch_enrichment')
-    def test_get_enrichment_table_main_network(self, mock_enrichment, mock_fetch_ids, mock_fetch_interactions):
+    @patch('ppi_net_builder.src.fetch.fetch_enrichment')
+    @patch('ppi_net_builder.src.fetch.fetch_stringdb')
+    @patch('ppi_net_builder.src.fetch.fetch_string_ids')
+    def test_get_enrichment_table_main_network(self, mock_fetch_ids, mock_fetch_interactions, mock_enrichment):
         """Test enrichment table retrieval for main network."""
         # Mock fetch_string_ids
         mock_ids_df = pd.DataFrame({
@@ -281,10 +281,10 @@ class TestNetworkBuilder:
             species_id=9606
         )
 
-    @patch('ppi_net_builder.src.graph.fetch_stringdb')
-    @patch('ppi_net_builder.src.graph.fetch_string_ids')
-    @patch('ppi_net_builder.src.graph.fetch_enrichment')
-    def test_get_enrichment_table_subnetwork(self, mock_enrichment, mock_fetch_ids, mock_fetch_interactions):
+    @patch('ppi_net_builder.src.fetch.fetch_enrichment')
+    @patch('ppi_net_builder.src.fetch.fetch_stringdb')
+    @patch('ppi_net_builder.src.fetch.fetch_string_ids')
+    def test_get_enrichment_table_subnetwork(self, mock_fetch_ids, mock_fetch_interactions, mock_enrichment):
         """Test enrichment table retrieval for specific subnetwork."""
         # Mock fetch_string_ids
         mock_ids_df = pd.DataFrame({
@@ -332,8 +332,8 @@ class TestNetworkBuilder:
             species_id=9606
         )
 
-    @patch('ppi_net_builder.src.graph.fetch_stringdb')
-    @patch('ppi_net_builder.src.graph.fetch_string_ids')
+    @patch('ppi_net_builder.src.fetch.fetch_stringdb')
+    @patch('ppi_net_builder.src.fetch.fetch_string_ids')
     def test_get_enrichment_table_without_network_raises_error(self, mock_fetch_ids, mock_fetch_interactions):
         """Test that enrichment table retrieval fails without constructed network."""
         mock_ids_df = pd.DataFrame({
@@ -353,10 +353,10 @@ class TestNetworkBuilder:
         with pytest.raises(ValueError, match="Please call .construct_network first to get the main network"):
             nb.get_enrichment_table()
 
-    @patch('ppi_net_builder.src.graph.fetch_stringdb')
-    @patch('ppi_net_builder.src.graph.fetch_string_ids')
-    @patch('ppi_net_builder.src.graph.fetch_enrichment_figure')
-    def test_save_enrichment_plot(self, mock_plot, mock_fetch_ids, mock_fetch_interactions):
+    @patch('ppi_net_builder.src.fetch.fetch_enrichment_figure')
+    @patch('ppi_net_builder.src.fetch.fetch_stringdb')
+    @patch('ppi_net_builder.src.fetch.fetch_string_ids')
+    def test_save_enrichment_plot(self, mock_fetch_ids, mock_fetch_interactions, mock_plot):
         """Test enrichment plot saving."""
         mock_ids_df = pd.DataFrame({
             'gene_name': ['Gene1', 'Gene2', 'Gene3'],
@@ -392,8 +392,8 @@ class TestNetworkBuilder:
             x_axis="FDR"
         )
 
-    @patch('ppi_net_builder.src.graph.fetch_stringdb')
-    @patch('ppi_net_builder.src.graph.fetch_string_ids')
+    @patch('ppi_net_builder.src.fetch.fetch_stringdb')
+    @patch('ppi_net_builder.src.fetch.fetch_string_ids')
     def test_get_interaction_table_calls_fetch(self, mock_fetch_ids, mock_fetch_interactions):
         """Test that get_interaction_table calls fetch_stringdb correctly."""
         mock_ids_df = pd.DataFrame({
