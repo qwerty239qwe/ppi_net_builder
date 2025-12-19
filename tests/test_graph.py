@@ -66,7 +66,7 @@ def test_network_builder_construct_network(monkeypatch, mock_string_ids_data, mo
     """Test network construction from interaction data."""
     # Monkeypatch the fetch functions
     monkeypatch.setattr(
-        'ppi_net_builder.src.graph.fetch_string_ids',
+        'ppi_net_builder.src.data.fetch_string_ids',
         lambda *args, **kwargs: mock_string_ids_data
     )
     monkeypatch.setattr(
@@ -88,7 +88,7 @@ def test_network_builder_init_with_gene_list(monkeypatch, mock_string_ids_data, 
     """Test NetworkBuilder initialization with gene list."""
     # Monkeypatch the fetch functions
     monkeypatch.setattr(
-        'ppi_net_builder.src.graph.fetch_string_ids',
+        'ppi_net_builder.src.data.fetch_string_ids',
         lambda *args, **kwargs: mock_string_ids_data
     )
     monkeypatch.setattr(
@@ -109,7 +109,7 @@ def test_network_builder_init_with_dataframe(monkeypatch, mock_string_ids_data, 
     """Test NetworkBuilder initialization with DataFrame."""
     # Monkeypatch the fetch functions
     monkeypatch.setattr(
-        'ppi_net_builder.src.graph.fetch_string_ids',
+        'ppi_net_builder.src.data.fetch_string_ids',
         lambda *args, **kwargs: mock_string_ids_data
     )
     monkeypatch.setattr(
@@ -128,7 +128,7 @@ def test_network_builder_construct_network_vertex_mapping(monkeypatch, mock_stri
     """Test that vertex mapping is created correctly."""
     # Monkeypatch the fetch functions
     monkeypatch.setattr(
-        'ppi_net_builder.src.graph.fetch_string_ids',
+        'ppi_net_builder.src.data.fetch_string_ids',
         lambda *args, **kwargs: mock_string_ids_data
     )
     monkeypatch.setattr(
@@ -154,7 +154,7 @@ def test_network_builder_extract_subnets(monkeypatch, mock_string_ids_data):
     """Test subnetwork extraction using community detection."""
     # Monkeypatch the fetch functions
     monkeypatch.setattr(
-        'ppi_net_builder.src.graph.fetch_string_ids',
+        'ppi_net_builder.src.data.fetch_string_ids',
         lambda *args, **kwargs: mock_string_ids_data
     )
     monkeypatch.setattr(
@@ -191,7 +191,7 @@ def test_network_builder_get_enrichment_table_main_network(monkeypatch, mock_str
     """Test enrichment table retrieval for main network."""
     # Monkeypatch the fetch functions
     monkeypatch.setattr(
-        'ppi_net_builder.src.graph.fetch_string_ids',
+        'ppi_net_builder.src.data.fetch_string_ids',
         lambda *args, **kwargs: mock_string_ids_data
     )
     monkeypatch.setattr(
@@ -221,7 +221,7 @@ def test_network_builder_get_enrichment_table_subnetwork(monkeypatch, mock_strin
     """Test enrichment table retrieval for specific subnetwork."""
     # Monkeypatch the fetch functions
     monkeypatch.setattr(
-        'ppi_net_builder.src.graph.fetch_string_ids',
+        'ppi_net_builder.src.data.fetch_string_ids',
         lambda *args, **kwargs: mock_string_ids_data
     )
     monkeypatch.setattr(
@@ -258,7 +258,7 @@ def test_network_builder_get_enrichment_table_without_network_raises_error(monke
     """Test that enrichment table retrieval fails without constructed network."""
     # Monkeypatch the fetch functions
     monkeypatch.setattr(
-        'ppi_net_builder.src.graph.fetch_string_ids',
+        'ppi_net_builder.src.data.fetch_string_ids',
         lambda *args, **kwargs: mock_string_ids_data
     )
     monkeypatch.setattr(
@@ -276,7 +276,7 @@ def test_network_builder_save_enrichment_plot(monkeypatch, mock_string_ids_data)
     """Test enrichment plot saving."""
     # Monkeypatch the fetch functions
     monkeypatch.setattr(
-        'ppi_net_builder.src.graph.fetch_string_ids',
+        'ppi_net_builder.src.data.fetch_string_ids',
         lambda *args, **kwargs: mock_string_ids_data
     )
     monkeypatch.setattr(
@@ -304,7 +304,7 @@ def test_network_builder_get_interaction_table_calls_fetch(monkeypatch, mock_str
     """Test that get_interaction_table calls fetch_stringdb correctly."""
     # Monkeypatch the fetch functions
     monkeypatch.setattr(
-        'ppi_net_builder.src.graph.fetch_string_ids',
+        'ppi_net_builder.src.data.fetch_string_ids',
         lambda *args, **kwargs: mock_string_ids_data
     )
     monkeypatch.setattr(
