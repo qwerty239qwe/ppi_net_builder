@@ -175,8 +175,15 @@ def test_network_builder_extract_subnets(monkeypatch, mock_string_ids_data):
     from unittest.mock import Mock, patch
     mock_community = Mock()
     mock_clustering = Mock()
-    mock_subgraphs = [Mock(), Mock()]  # Two communities
-    mock_clustering.subgraphs.return_value = mock_subgraphs
+
+    # Create mock subgraphs with vcount() methods that return comparable integers
+    mock_subgraph1 = Mock()
+    mock_subgraph1.vcount.return_value = 3  # Smaller community
+    mock_subgraph2 = Mock()
+    mock_subgraph2.vcount.return_value = 5  # Larger community
+
+    # Return subgraphs in the order they would be sorted (reversed sorted by size)
+    mock_clustering.subgraphs.return_value = [mock_subgraph1, mock_subgraph2]
     mock_community.return_value.as_clustering.return_value = mock_clustering
 
     with patch.object(nb.network, 'community_fastgreedy', mock_community):
@@ -238,6 +245,8 @@ def test_network_builder_get_enrichment_table_subnetwork(monkeypatch, mock_strin
         'ppi_net_builder.src.graph.fetch_enrichment',
         lambda *args, **kwargs: mock_enrichment_data
     )
+
+    from ppi_net_builder.src.graph import NetworkBuilder
 
     nb = NetworkBuilder(["Gene1", "Gene2", "Gene3"])
     nb.construct_network()
