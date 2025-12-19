@@ -49,6 +49,7 @@ class TestFetchStringIds:
 
             # Mock response for new gene (without header, as the function expects data rows)
             mock_response = Mock()
+            mock_response.ok = True
             mock_response.text = "TP53\t0\t9606.ENSP00000269305\t9606\tHomo sapiens\tTP53\tnew_annotation"
             mock_post.return_value = mock_response
 
