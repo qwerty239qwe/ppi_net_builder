@@ -212,7 +212,7 @@ def test_network_builder_get_enrichment_table_main_network(monkeypatch, mock_str
         })
     )
     monkeypatch.setattr(
-        'ppi_net_builder.src.fetch.fetch_enrichment',
+        'ppi_net_builder.src.graph.fetch_enrichment',
         lambda *args, **kwargs: mock_enrichment_data
     )
 
