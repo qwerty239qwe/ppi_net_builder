@@ -77,7 +77,7 @@ def fetch_stringdb(genes,
     if not response.ok:
         print(f"Request is not successful. Status Code: {response.status_code}")
         print(request_url, params)
-        return pd.DataFrame(columns=columns)
+        return pd.DataFrame(columns=[])
     
     if output == "image":
         with open(img_file_name, 'wb') as fh:
