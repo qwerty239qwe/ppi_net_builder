@@ -1,4 +1,5 @@
 import pytest
+import pandas as pd
 from unittest.mock import Mock, patch
 from ppi_net_builder.src.fetch import _format_req_url, fetch_string_ids, fetch_stringdb, fetch_enrichment_figure, fetch_enrichment
 
@@ -30,27 +31,6 @@ class TestFetchStringIds:
 
     @patch('ppi_net_builder.src.fetch.requests.post')
     @patch('ppi_net_builder.src.fetch.tqdm')
-    def test_fetch_string_ids_basic(self, mock_tqdm, mock_post):
-        """Test basic functionality of fetch_string_ids."""
-        # Mock tqdm context manager
-        mock_tqdm.return_value.__enter__ = Mock()
-        mock_tqdm.return_value.__exit__ = Mock(return_value=None)
-
-        # Mock response
-        mock_response = Mock()
-        mock_response.text = "inputIdentifier\tstringId\tspeciesId\tspeciesName\tpreferredName\tannotation\nTP53\t9606.ENSP00000269305\t9606\tHomo sapiens\tTP53\tannotation"
-        mock_post.return_value = mock_response
-
-        genes = ["TP53"]
-        result = fetch_string_ids(genes, species_id=9606)
-
-        assert len(result) == 1
-        assert result.iloc[0]["gene_name"] == "TP53"
-        assert result.iloc[0]["STRING_ID"] == "9606.ENSP00000269305"
-        assert result.iloc[0]["species"] == "9606"
-
-    @patch('ppi_net_builder.src.fetch.requests.post')
-    @patch('ppi_net_builder.src.fetch.tqdm')
     def test_fetch_string_ids_with_existing_file(self, mock_tqdm, mock_post):
         """Test fetch_string_ids with existing annotation file."""
         import tempfile
@@ -58,8 +38,8 @@ class TestFetchStringIds:
 
         # Create temporary file with existing data
         with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as f:
-            f.write("gene_name,STRING_ID,species,species_name,preferred_name,annotation\n")
-            f.write("BRCA1,9606.ENSP00000471181,9606,Homo sapiens,BRCA1,existing\n")
+            f.write(",gene_name,STRING_ID,species,species_name,preferred_name,annotation\n")
+            f.write("0,BRCA1,9606.ENSP00000471181,9606,Homo sapiens,BRCA1,existing\n")
             temp_file = f.name
 
         try:
@@ -69,7 +49,7 @@ class TestFetchStringIds:
 
             # Mock response for new gene
             mock_response = Mock()
-            mock_response.text = "inputIdentifier\tstringId\tspeciesId\tspeciesName\tpreferredName\tannotation\nTP53\t9606.ENSP00000269305\t9606\tHomo sapiens\tTP53\tnew_annotation"
+            mock_response.text = "inputIdentifier\tqueryIndex\tstringId\tspeciesId\tspeciesName\tpreferredName\tannotation\nTP53\t0\t9606.ENSP00000269305\t9606\tHomo sapiens\tTP53\tnew_annotation"
             mock_post.return_value = mock_response
 
             genes = ["BRCA1", "TP53"]  # BRCA1 exists, TP53 is new

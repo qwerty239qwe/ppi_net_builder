@@ -43,7 +43,21 @@ class TestRequireAttribute:
                 return "success"
 
         obj = TestClass()
-        with pytest.raises(ValueError, match="must not be None"):
+        with pytest.raises(ValueError, match="Please call .construct_network first to get the main network"):
+            obj.test_method()
+
+    def test_require_attribute_none_value_generic(self):
+        """Test that decorator raises ValueError with generic message for non-network attributes."""
+        class TestClass:
+            def __init__(self):
+                self.other_attr = None
+
+            @require_attribute("other_attr")
+            def test_method(self):
+                return "success"
+
+        obj = TestClass()
+        with pytest.raises(ValueError, match="The attribute 'other_attr' must not be None"):
             obj.test_method()
 
 
@@ -240,7 +254,7 @@ class TestNetworkBuilder:
 
         nb = NetworkBuilder(["Gene1"])
 
-        with pytest.raises(ValueError, match="must not be None"):
+        with pytest.raises(ValueError, match="Please call .construct_network first to get the main network"):
             nb.get_enrichment_table()
 
     @patch('ppi_net_builder.src.graph.fetch_stringdb')
