@@ -65,17 +65,29 @@ class TestNetworkBuilder:
     """Test cases for the NetworkBuilder class."""
 
     @patch('ppi_net_builder.src.graph.fetch_stringdb')
-    def test_init_with_gene_list(self, mock_fetch):
+    @patch('ppi_net_builder.src.graph.fetch_string_ids')
+    def test_init_with_gene_list(self, mock_fetch_ids, mock_fetch_interactions):
         """Test NetworkBuilder initialization with gene list."""
+        # Mock fetch_string_ids
+        mock_ids_df = pd.DataFrame({
+            'gene_name': ['TP53', 'BRCA1'],
+            'STRING_ID': ['9606.ENSP00000269305', '9606.ENSP00000471181'],
+            'species': ['9606', '9606'],
+            'species_name': ['Homo sapiens', 'Homo sapiens'],
+            'preferred_name': ['TP53', 'BRCA1'],
+            'annotation': ['annotation1', 'annotation2']
+        })
+        mock_fetch_ids.return_value = mock_ids_df
+
         # Mock the fetch_stringdb response
-        mock_df = pd.DataFrame({
+        mock_interactions_df = pd.DataFrame({
             'stringId_A': ['9606.ENSP00000269305', '9606.ENSP00000471181'],
             'stringId_B': ['9606.ENSP00000471181', '9606.ENSP00000269305'],
             'preferredName_A': ['TP53', 'BRCA1'],
             'preferredName_B': ['BRCA1', 'TP53'],
             'score': [0.9, 0.8]
         })
-        mock_fetch.return_value = mock_df
+        mock_fetch_interactions.return_value = mock_interactions_df
 
         genes = ["TP53", "BRCA1"]
         nb = NetworkBuilder(genes, species="human")
@@ -84,38 +96,63 @@ class TestNetworkBuilder:
         assert nb.network is None
         assert nb.network_vert_dic is None
         assert nb.subnetworks == {}
-        mock_fetch.assert_called_once()
+        mock_fetch_interactions.assert_called_once()
 
     @patch('ppi_net_builder.src.graph.fetch_stringdb')
-    def test_init_with_dataframe(self, mock_fetch):
+    @patch('ppi_net_builder.src.graph.fetch_string_ids')
+    def test_init_with_dataframe(self, mock_fetch_ids, mock_fetch_interactions):
         """Test NetworkBuilder initialization with DataFrame."""
-        mock_df = pd.DataFrame({
+        # Mock fetch_string_ids
+        mock_ids_df = pd.DataFrame({
+            'gene_name': ['TP53', 'BRCA1'],
+            'STRING_ID': ['9606.ENSP00000269305', '9606.ENSP00000471181'],
+            'species': ['9606', '9606'],
+            'species_name': ['Homo sapiens', 'Homo sapiens'],
+            'preferred_name': ['TP53', 'BRCA1'],
+            'annotation': ['annotation1', 'annotation2']
+        })
+        mock_fetch_ids.return_value = mock_ids_df
+
+        mock_interactions_df = pd.DataFrame({
             'stringId_A': ['9606.ENSP00000269305'],
             'stringId_B': ['9606.ENSP00000471181'],
             'preferredName_A': ['TP53'],
             'preferredName_B': ['BRCA1'],
             'score': [0.9]
         })
-        mock_fetch.return_value = mock_df
+        mock_fetch_interactions.return_value = mock_interactions_df
 
         df = pd.DataFrame({"gene_name": ["TP53", "BRCA1"]})
         nb = NetworkBuilder(df, species="human")
 
         assert isinstance(nb.data, DataManager)
         assert nb.network is None
-        mock_fetch.assert_called_once()
+        mock_fetch_interactions.assert_called_once()
 
     @patch('ppi_net_builder.src.graph.fetch_stringdb')
-    def test_construct_network(self, mock_fetch):
+    @patch('ppi_net_builder.src.graph.fetch_string_ids')
+    def test_construct_network(self, mock_fetch_ids, mock_fetch_interactions):
         """Test network construction from interaction data."""
-        mock_df = pd.DataFrame({
+        # Mock fetch_string_ids to return gene-to-ID mapping
+        mock_ids_df = pd.DataFrame({
+            'gene_name': ['Gene1', 'Gene2', 'Gene3'],
+            'STRING_ID': ['A', 'B', 'C'],
+            'species': ['9606', '9606', '9606'],
+            'species_name': ['Homo sapiens', 'Homo sapiens', 'Homo sapiens'],
+            'preferred_name': ['Gene1', 'Gene2', 'Gene3'],
+            'annotation': ['annotation1', 'annotation2', 'annotation3']
+        })
+        mock_fetch_ids.return_value = mock_ids_df
+
+        # Mock fetch_stringdb to return interaction data
+        mock_interactions_df = pd.DataFrame({
             'stringId_A': ['A', 'B', 'A'],
             'stringId_B': ['B', 'C', 'C'],
             'preferredName_A': ['Gene1', 'Gene2', 'Gene1'],
             'preferredName_B': ['Gene2', 'Gene3', 'Gene3'],
             'score': [0.9, 0.8, 0.7]
         })
-        mock_fetch.return_value = mock_df
+        mock_fetch_interactions.return_value = mock_interactions_df
 
         nb = NetworkBuilder(["Gene1", "Gene2", "Gene3"])
         nb.construct_network()
@@ -127,16 +164,28 @@ class TestNetworkBuilder:
         assert nb.network.vs['gene_name'] == ['A', 'B', 'C']
 
     @patch('ppi_net_builder.src.graph.fetch_stringdb')
-    def test_construct_network_vertex_mapping(self, mock_fetch):
+    @patch('ppi_net_builder.src.graph.fetch_string_ids')
+    def test_construct_network_vertex_mapping(self, mock_fetch_ids, mock_fetch_interactions):
         """Test that vertex mapping is created correctly."""
-        mock_df = pd.DataFrame({
+        # Mock fetch_string_ids
+        mock_ids_df = pd.DataFrame({
+            'gene_name': ['Gene1', 'Gene2', 'Gene3'],
+            'STRING_ID': ['X', 'Y', 'Z'],
+            'species': ['9606', '9606', '9606'],
+            'species_name': ['Homo sapiens', 'Homo sapiens', 'Homo sapiens'],
+            'preferred_name': ['Gene1', 'Gene2', 'Gene3'],
+            'annotation': ['annotation1', 'annotation2', 'annotation3']
+        })
+        mock_fetch_ids.return_value = mock_ids_df
+
+        mock_interactions_df = pd.DataFrame({
             'stringId_A': ['X', 'Y'],
             'stringId_B': ['Y', 'Z'],
             'preferredName_A': ['Gene1', 'Gene2'],
             'preferredName_B': ['Gene2', 'Gene3'],
             'score': [0.9, 0.8]
         })
-        mock_fetch.return_value = mock_df
+        mock_fetch_interactions.return_value = mock_interactions_df
 
         nb = NetworkBuilder(["Gene1", "Gene2", "Gene3"])
         nb.construct_network()
@@ -146,17 +195,29 @@ class TestNetworkBuilder:
         assert nb.network_vert_dic == expected_mapping
 
     @patch('ppi_net_builder.src.graph.fetch_stringdb')
-    def test_extract_subnets(self, mock_fetch):
+    @patch('ppi_net_builder.src.graph.fetch_string_ids')
+    def test_extract_subnets(self, mock_fetch_ids, mock_fetch_interactions):
         """Test subnetwork extraction using community detection."""
+        # Mock fetch_string_ids
+        mock_ids_df = pd.DataFrame({
+            'gene_name': ['Gene1', 'Gene2', 'Gene3', 'Gene4', 'Gene5'],
+            'STRING_ID': ['A', 'B', 'C', 'D', 'E'],
+            'species': ['9606'] * 5,
+            'species_name': ['Homo sapiens'] * 5,
+            'preferred_name': ['Gene1', 'Gene2', 'Gene3', 'Gene4', 'Gene5'],
+            'annotation': ['ann1', 'ann2', 'ann3', 'ann4', 'ann5']
+        })
+        mock_fetch_ids.return_value = mock_ids_df
+
         # Create mock interaction data that forms two clear communities
-        mock_df = pd.DataFrame({
+        mock_interactions_df = pd.DataFrame({
             'stringId_A': ['A', 'A', 'B', 'B', 'C', 'D'],
             'stringId_B': ['B', 'C', 'C', 'D', 'D', 'E'],
             'preferredName_A': ['Gene1', 'Gene1', 'Gene2', 'Gene2', 'Gene3', 'Gene4'],
             'preferredName_B': ['Gene2', 'Gene3', 'Gene3', 'Gene4', 'Gene4', 'Gene5'],
             'score': [0.9, 0.8, 0.9, 0.8, 0.7, 0.6]
         })
-        mock_fetch.return_value = mock_df
+        mock_fetch_interactions.return_value = mock_interactions_df
 
         nb = NetworkBuilder(["Gene1", "Gene2", "Gene3", "Gene4", "Gene5"])
         nb.construct_network()
@@ -176,9 +237,21 @@ class TestNetworkBuilder:
         assert 1 in nb.subnetworks
 
     @patch('ppi_net_builder.src.graph.fetch_stringdb')
+    @patch('ppi_net_builder.src.graph.fetch_string_ids')
     @patch('ppi_net_builder.src.graph.fetch_enrichment')
-    def test_get_enrichment_table_main_network(self, mock_enrichment, mock_fetch):
+    def test_get_enrichment_table_main_network(self, mock_enrichment, mock_fetch_ids, mock_fetch_interactions):
         """Test enrichment table retrieval for main network."""
+        # Mock fetch_string_ids
+        mock_ids_df = pd.DataFrame({
+            'gene_name': ['Gene1', 'Gene2', 'Gene3'],
+            'STRING_ID': ['A', 'B', 'C'],
+            'species': ['9606'] * 3,
+            'species_name': ['Homo sapiens'] * 3,
+            'preferred_name': ['Gene1', 'Gene2', 'Gene3'],
+            'annotation': ['ann1', 'ann2', 'ann3']
+        })
+        mock_fetch_ids.return_value = mock_ids_df
+
         # Setup mock data
         mock_interaction_df = pd.DataFrame({
             'stringId_A': ['A', 'B'],
@@ -187,7 +260,7 @@ class TestNetworkBuilder:
             'preferredName_B': ['Gene2', 'Gene3'],
             'score': [0.9, 0.8]
         })
-        mock_fetch.return_value = mock_interaction_df
+        mock_fetch_interactions.return_value = mock_interaction_df
 
         mock_enrichment_df = pd.DataFrame({
             'term': ['GO:12345', 'GO:67890'],
@@ -209,9 +282,21 @@ class TestNetworkBuilder:
         )
 
     @patch('ppi_net_builder.src.graph.fetch_stringdb')
+    @patch('ppi_net_builder.src.graph.fetch_string_ids')
     @patch('ppi_net_builder.src.graph.fetch_enrichment')
-    def test_get_enrichment_table_subnetwork(self, mock_enrichment, mock_fetch):
+    def test_get_enrichment_table_subnetwork(self, mock_enrichment, mock_fetch_ids, mock_fetch_interactions):
         """Test enrichment table retrieval for specific subnetwork."""
+        # Mock fetch_string_ids
+        mock_ids_df = pd.DataFrame({
+            'gene_name': ['Gene1', 'Gene2', 'Gene3'],
+            'STRING_ID': ['A', 'B', 'C'],
+            'species': ['9606'] * 3,
+            'species_name': ['Homo sapiens'] * 3,
+            'preferred_name': ['Gene1', 'Gene2', 'Gene3'],
+            'annotation': ['ann1', 'ann2', 'ann3']
+        })
+        mock_fetch_ids.return_value = mock_ids_df
+
         # Setup mock data
         mock_interaction_df = pd.DataFrame({
             'stringId_A': ['A', 'B'],
@@ -220,7 +305,7 @@ class TestNetworkBuilder:
             'preferredName_B': ['Gene2', 'Gene3'],
             'score': [0.9, 0.8]
         })
-        mock_fetch.return_value = mock_interaction_df
+        mock_fetch_interactions.return_value = mock_interaction_df
 
         nb = NetworkBuilder(["Gene1", "Gene2", "Gene3"])
         nb.construct_network()
@@ -248,9 +333,20 @@ class TestNetworkBuilder:
         )
 
     @patch('ppi_net_builder.src.graph.fetch_stringdb')
-    def test_get_enrichment_table_without_network_raises_error(self, mock_fetch):
+    @patch('ppi_net_builder.src.graph.fetch_string_ids')
+    def test_get_enrichment_table_without_network_raises_error(self, mock_fetch_ids, mock_fetch_interactions):
         """Test that enrichment table retrieval fails without constructed network."""
-        mock_fetch.return_value = pd.DataFrame()
+        mock_ids_df = pd.DataFrame({
+            'gene_name': ['Gene1'],
+            'STRING_ID': ['A'],
+            'species': ['9606'],
+            'species_name': ['Homo sapiens'],
+            'preferred_name': ['Gene1'],
+            'annotation': ['ann1']
+        })
+        mock_fetch_ids.return_value = mock_ids_df
+
+        mock_fetch_interactions.return_value = pd.DataFrame()
 
         nb = NetworkBuilder(["Gene1"])
 
@@ -258,9 +354,20 @@ class TestNetworkBuilder:
             nb.get_enrichment_table()
 
     @patch('ppi_net_builder.src.graph.fetch_stringdb')
+    @patch('ppi_net_builder.src.graph.fetch_string_ids')
     @patch('ppi_net_builder.src.graph.fetch_enrichment_figure')
-    def test_save_enrichment_plot(self, mock_plot, mock_fetch):
+    def test_save_enrichment_plot(self, mock_plot, mock_fetch_ids, mock_fetch_interactions):
         """Test enrichment plot saving."""
+        mock_ids_df = pd.DataFrame({
+            'gene_name': ['Gene1', 'Gene2', 'Gene3'],
+            'STRING_ID': ['A', 'B', 'C'],
+            'species': ['9606'] * 3,
+            'species_name': ['Homo sapiens'] * 3,
+            'preferred_name': ['Gene1', 'Gene2', 'Gene3'],
+            'annotation': ['ann1', 'ann2', 'ann3']
+        })
+        mock_fetch_ids.return_value = mock_ids_df
+
         mock_interaction_df = pd.DataFrame({
             'stringId_A': ['A', 'B'],
             'stringId_B': ['B', 'C'],
@@ -268,7 +375,7 @@ class TestNetworkBuilder:
             'preferredName_B': ['Gene2', 'Gene3'],
             'score': [0.9, 0.8]
         })
-        mock_fetch.return_value = mock_interaction_df
+        mock_fetch_interactions.return_value = mock_interaction_df
 
         nb = NetworkBuilder(["Gene1", "Gene2", "Gene3"])
         nb.construct_network()
@@ -286,21 +393,32 @@ class TestNetworkBuilder:
         )
 
     @patch('ppi_net_builder.src.graph.fetch_stringdb')
-    def test_get_interaction_table_calls_fetch(self, mock_fetch):
+    @patch('ppi_net_builder.src.graph.fetch_string_ids')
+    def test_get_interaction_table_calls_fetch(self, mock_fetch_ids, mock_fetch_interactions):
         """Test that get_interaction_table calls fetch_stringdb correctly."""
+        mock_ids_df = pd.DataFrame({
+            'gene_name': ['Gene1'],
+            'STRING_ID': ['9606'],
+            'species': ['9606'],
+            'species_name': ['Homo sapiens'],
+            'preferred_name': ['Gene1'],
+            'annotation': ['ann1']
+        })
+        mock_fetch_ids.return_value = mock_ids_df
+
         mock_df = pd.DataFrame({
             'stringId_A': ['A'],
             'stringId_B': ['B'],
             'score': [0.9]
         })
-        mock_fetch.return_value = mock_df
+        mock_fetch_interactions.return_value = mock_df
 
         nb = NetworkBuilder(["Gene1"])
         result = nb.get_interaction_table(required_score=700)
 
         assert result.equals(mock_df)
-        mock_fetch.assert_called_with(
-            genes=[9606],  # Mock STRING ID
+        mock_fetch_interactions.assert_called_with(
+            genes=['9606'],  # Mock STRING ID
             method="network",
             version="12.0",
             species_id=9606,

@@ -47,9 +47,9 @@ class TestFetchStringIds:
             mock_tqdm.return_value.__enter__ = Mock()
             mock_tqdm.return_value.__exit__ = Mock(return_value=None)
 
-            # Mock response for new gene
+            # Mock response for new gene (without header, as the function expects data rows)
             mock_response = Mock()
-            mock_response.text = "inputIdentifier\tqueryIndex\tstringId\tspeciesId\tspeciesName\tpreferredName\tannotation\nTP53\t0\t9606.ENSP00000269305\t9606\tHomo sapiens\tTP53\tnew_annotation"
+            mock_response.text = "TP53\t0\t9606.ENSP00000269305\t9606\tHomo sapiens\tTP53\tnew_annotation"
             mock_post.return_value = mock_response
 
             genes = ["BRCA1", "TP53"]  # BRCA1 exists, TP53 is new

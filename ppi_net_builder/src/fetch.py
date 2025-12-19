@@ -42,15 +42,23 @@ def fetch_string_ids(genes: t.Sequence,
             # "caller_identity" : "www.awesome_app.org" # your app name
         }
         results = requests.post(request_url, data=params)
+        if not results.ok:
+            continue
+
         dfs.append(pd.DataFrame([line.split("\t") for line in results.text.split("\n")]).dropna())
 
-    stringdb_ids = pd.concat(dfs, axis=0).dropna(how='any')
-    stringdb_ids = stringdb_ids.rename(columns={0: "gene_name", 
-                                                2: "STRING_ID", 
-                                                3: "species", 
-                                                4: "species_name", 
-                                                5: "preferred_name", 
-                                                6: "annotation"}).drop(columns=[1])
+    col_id_map = {0: "gene_name", 
+                2: "STRING_ID", 
+                3: "species", 
+                4: "species_name", 
+                5: "preferred_name", 
+                6: "annotation"}
+    if len(dfs) != 0:
+        stringdb_ids = pd.concat(dfs, axis=0).dropna(how='any')
+        stringdb_ids = stringdb_ids.rename(columns=col_id_map).drop(columns=[1])
+    else:
+        stringdb_ids = pd.DataFrame(columns=list(col_id_map.values()))
+        
     if prev_res is not None:
         stringdb_ids = pd.concat([prev_res, stringdb_ids], axis=0)
     if file_name is not None:

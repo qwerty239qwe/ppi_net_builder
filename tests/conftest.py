@@ -16,8 +16,8 @@ def sample_dataframe(sample_gene_list):
 
 
 @pytest.fixture
-def mock_interaction_data():
-    """Mock interaction DataFrame for testing."""
+def mock_interaction_data_full():
+    """Mock interaction DataFrame with full STRING IDs for testing."""
     return pd.DataFrame({
         'stringId_A': ['9606.ENSP00000269305', '9606.ENSP00000471181', '9606.ENSP00000275493'],
         'stringId_B': ['9606.ENSP00000471181', '9606.ENSP00000275493', '9606.ENSP00000418960'],
@@ -37,4 +37,29 @@ def mock_enrichment_data():
         'signal': [45.2, 32.1],
         'strength': [78.9, 65.4],
         'gene_count': [15, 12]
+    })
+
+
+@pytest.fixture
+def mock_string_ids_data():
+    """Mock STRING IDs DataFrame for testing."""
+    return pd.DataFrame({
+        'gene_name': ['Gene1', 'Gene2', 'Gene3'],
+        'STRING_ID': ['A', 'B', 'C'],
+        'species': ['9606', '9606', '9606'],
+        'species_name': ['Homo sapiens', 'Homo sapiens', 'Homo sapiens'],
+        'preferred_name': ['Gene1', 'Gene2', 'Gene3'],
+        'annotation': ['annotation1', 'annotation2', 'annotation3']
+    })
+
+
+@pytest.fixture
+def mock_interaction_data_simple():
+    """Mock interaction DataFrame with simple IDs for testing."""
+    return pd.DataFrame({
+        'stringId_A': ['A', 'B', 'A'],
+        'stringId_B': ['B', 'C', 'C'],
+        'preferredName_A': ['Gene1', 'Gene2', 'Gene1'],
+        'preferredName_B': ['Gene2', 'Gene3', 'Gene3'],
+        'score': [0.9, 0.8, 0.7]
     })
