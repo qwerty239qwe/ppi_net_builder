@@ -43,9 +43,8 @@ class TestFetchStringIds:
             temp_file = f.name
 
         try:
-            # Mock tqdm
-            mock_tqdm.return_value.__enter__ = Mock()
-            mock_tqdm.return_value.__exit__ = Mock(return_value=None)
+            # Mock tqdm to just pass through the iterable
+            mock_tqdm.side_effect = lambda x: x
 
             # Mock response for new gene (without header, as the function expects data rows)
             mock_response = Mock()
