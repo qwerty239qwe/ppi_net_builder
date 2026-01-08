@@ -3,6 +3,7 @@
 ![PyPI version](https://img.shields.io/pypi/v/ppi-net-builder)
 ![Python version](https://img.shields.io/badge/python-3.9%2B-blue)
 ![License](https://img.shields.io/pypi/l/ppi-net-builder)
+[![codecov](https://codecov.io/github/qwerty239qwe/ppi_net_builder/graph/badge.svg?token=1KG24F4GYU)](https://codecov.io/github/qwerty239qwe/ppi_net_builder)
 
 **PPI-net-builder** is a Python package for constructing and analyzing protein-protein interaction (PPI) networks using the [STRING-db](https://string-db.org/) database.
 
